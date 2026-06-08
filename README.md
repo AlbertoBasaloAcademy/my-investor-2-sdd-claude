@@ -1,8 +1,10 @@
-# My-Investor-sdd-claude
+# My-Investor-2-sdd-claude
 
-Curso de Spec-Driven Development para My-Investor Edición Claude
+Curso 2 de Spec-Driven Development para My-Investor Edición Claude
 
 git clone --depth 1 --single-branch --branch brownfield https://github.com/AIDDbot/ab-java-react.git   temp
+
+Repo: https://github.com/AlbertoBasaloAcademy/my-investor-2-sdd-claude
 
 ---
 
