@@ -35,7 +35,7 @@ C4Container
 ### Containers table
 | Container | Technology | Responsibility |
 |-----------|------------|----------------|
-| [back](./back.arch.md) | Java 21, Spring Boot 3.5 (web, data-jpa) | REST API under `/api/*`; rocket and health domain logic; persistence |
+| [back](./back.arch.md) | Java 21, Spring Boot 3.5 (web, data-jpa) | REST API under `/api/*`; rockets, launches, and health domains; persistence |
 | [front](./front.arch.md) | React 19, TypeScript, Vite | Single-page UI; rocket catalog and health views; HTTP client to the API |
 | [db](./db.arch.md) | SQLite (`back/data/app.db`) | Relational storage; schema auto-managed by Hibernate (`ddl-auto: update`) |
 | [e2e](./e2e.arch.md) | Playwright + TypeScript | End-to-end tests booting the real API + SPA |
