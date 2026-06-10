@@ -1,0 +1,111 @@
+.rocket-catalog {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 640px;
+  margin: 1rem auto;
+}
+
+.rocket-catalog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.rocket-catalog-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.rocket-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rocket-item {
+  background: var(--item-bg, #181825);
+  border: 1px solid var(--border, #313244);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.rocket-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rocket-name {
+  font-weight: 600;
+  flex: 1;
+}
+
+.rocket-meta {
+  font-size: 0.875rem;
+  color: var(--muted, #9399b2);
+}
+
+.rocket-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.rocket-decommission-btn {
+  background: transparent;
+  color: var(--danger, #f38ba8);
+  border-color: var(--danger, #f38ba8);
+}
+
+.rocket-decommission-btn:hover {
+  background: var(--danger, #f38ba8);
+  color: #fff;
+}
+
+.rocket-error {
+  color: var(--danger, #f38ba8);
+  text-align: center;
+  padding: 1rem;
+}
+
+.rocket-form {
+  background: var(--item-bg, #181825);
+  border: 1px solid var(--border, #313244);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rocket-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.rocket-form-row label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.rocket-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.rocket-form-error {
+  color: var(--danger, #f38ba8);
+  font-size: 0.875rem;
+  margin: 0;
+}
