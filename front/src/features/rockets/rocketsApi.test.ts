@@ -5,7 +5,7 @@ import { createRocket, decommissionRocket, getRockets, updateRocket } from './ro
 
 vi.mock('../../shared/api/httpClient');
 
-const mockRocket: Rocket = { id: 'uuid-1', name: 'Falcon 9', capacity: 5, range: 'Earth' };
+const mockRocket: Rocket = { id: 'uuid-1', name: 'Falcon 9', capacity: 5, range: 'Earth', decommissioned: false };
 
 describe('rocketsApi', () => {
   afterEach(() => {

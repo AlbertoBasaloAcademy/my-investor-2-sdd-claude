@@ -1,5 +1,7 @@
 package dev.aiddbot.abjavareact.rockets;
 
+import dev.aiddbot.abjavareact.launches.LaunchRepository;
+import dev.aiddbot.abjavareact.launches.LaunchStatus;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -11,9 +13,11 @@ public class RocketService {
   private static final Set<String> VALID_RANGES = Set.of("Earth", "Moon", "Mars");
 
   private final RocketRepository repository;
+  private final LaunchRepository launchRepository;
 
-  public RocketService(RocketRepository repository) {
+  public RocketService(RocketRepository repository, LaunchRepository launchRepository) {
     this.repository = repository;
+    this.launchRepository = launchRepository;
   }
 
   public RocketResponse create(RocketRequest request) {
@@ -34,10 +38,13 @@ public class RocketService {
   }
 
   public void decommission(String id) {
-    if (!repository.existsById(id)) {
-      throw new NoSuchElementException("Rocket not found: " + id);
+    Rocket rocket = repository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Rocket not found: " + id));
+    if (launchRepository.existsByRocket_IdAndStatusIn(id, Set.of(LaunchStatus.CREATED, LaunchStatus.CONFIRMED))) {
+      throw new IllegalStateException("Rocket has active launches and cannot be decommissioned");
     }
-    repository.deleteById(id);
+    rocket.decommission();
+    repository.save(rocket);
   }
 
   private void validate(RocketRequest request, String excludeId) {
@@ -59,6 +66,8 @@ public class RocketService {
   }
 
   private RocketResponse toResponse(Rocket rocket) {
-    return new RocketResponse(rocket.getId(), rocket.getName(), rocket.getCapacity(), rocket.getRange());
+    return new RocketResponse(
+        rocket.getId(), rocket.getName(), rocket.getCapacity(),
+        rocket.getRange(), rocket.isDecommissioned());
   }
 }

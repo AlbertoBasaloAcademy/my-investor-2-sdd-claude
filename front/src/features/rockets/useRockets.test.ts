@@ -6,7 +6,7 @@ import { useRockets } from './useRockets';
 
 vi.mock('./rocketsApi');
 
-const mockRocket: Rocket = { id: 'uuid-1', name: 'Falcon 9', capacity: 5, range: 'Earth' };
+const mockRocket: Rocket = { id: 'uuid-1', name: 'Falcon 9', capacity: 5, range: 'Earth', decommissioned: false };
 
 describe('useRockets', () => {
   afterEach(() => {

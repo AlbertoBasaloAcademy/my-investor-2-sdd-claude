@@ -5,6 +5,7 @@ export interface Rocket {
   name: string;
   capacity: number;
   range: RocketRange;
+  decommissioned: boolean;
 }
 
 export interface RocketRequest {

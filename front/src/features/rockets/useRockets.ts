@@ -38,7 +38,7 @@ export function useRockets() {
 
   const decommission = useCallback(async (id: string): Promise<void> => {
     await decommissionRocket(id);
-    setRockets((prev) => prev.filter((r) => r.id !== id));
+    setRockets((prev) => prev.map((r) => (r.id === id ? { ...r, decommissioned: true } : r)));
   }, []);
 
   return { rockets, error, isLoading, create, update, decommission } as const;

@@ -24,6 +24,9 @@ public class Rocket {
   @Column(nullable = false)
   private String range;
 
+  @Column(nullable = false)
+  private boolean decommissioned = false;
+
   protected Rocket() {
   }
 
@@ -33,11 +36,19 @@ public class Rocket {
     this.range = range;
   }
 
-  Rocket(String id, String name, int capacity, String range) {
+  public Rocket(String id, String name, int capacity, String range) {
     this.id = id;
     this.name = name;
     this.capacity = capacity;
     this.range = range;
+  }
+
+  public Rocket(String id, String name, int capacity, String range, boolean decommissioned) {
+    this.id = id;
+    this.name = name;
+    this.capacity = capacity;
+    this.range = range;
+    this.decommissioned = decommissioned;
   }
 
   public String getId() {
@@ -56,9 +67,17 @@ public class Rocket {
     return range;
   }
 
+  public boolean isDecommissioned() {
+    return decommissioned;
+  }
+
   public void update(String name, int capacity, String range) {
     this.name = name;
     this.capacity = capacity;
     this.range = range;
+  }
+
+  public void decommission() {
+    this.decommissioned = true;
   }
 }

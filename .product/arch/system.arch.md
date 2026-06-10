@@ -50,14 +50,12 @@ C4Container
 
 > Canonical, system-wide entity model. Specs reference a feature subset; container docs add physical schemas.
 
-The two domains are independent — there is no relationship between `ROCKET` and `HEALTH_CHECK`.
+`HEALTH_CHECK` is independent from the rocket/launch domain.
 
 ```mermaid
 erDiagram
-    ROCKET {
-    }
-    HEALTH_CHECK {
-    }
+    ROCKET ||--o{ LAUNCH : "assigned to"
+    HEALTH_CHECK
 ```
 
 ---

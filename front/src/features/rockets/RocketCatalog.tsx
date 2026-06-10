@@ -150,19 +150,22 @@ export function RocketCatalog() {
                   </span>
                   <span className="rocket-meta">
                     Capacity: {rocket.capacity} · Range: {rocket.range}
+                    {rocket.decommissioned && ' · Decommissioned'}
                   </span>
-                  <div className="rocket-actions">
-                    <button onClick={() => setEditingId(rocket.id)} data-testid="edit-rocket-btn">
-                      Edit
-                    </button>
-                    <button
-                      className="rocket-decommission-btn"
-                      onClick={() => void decommission(rocket.id)}
-                      data-testid="decommission-rocket-btn"
-                    >
-                      Decommission
-                    </button>
-                  </div>
+                  {!rocket.decommissioned && (
+                    <div className="rocket-actions">
+                      <button onClick={() => setEditingId(rocket.id)} data-testid="edit-rocket-btn">
+                        Edit
+                      </button>
+                      <button
+                        className="rocket-decommission-btn"
+                        onClick={() => void decommission(rocket.id)}
+                        data-testid="decommission-rocket-btn"
+                      >
+                        Decommission
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </li>
