@@ -3,7 +3,8 @@
 ## Overview
 
 A full-stack web application for space-launch operators to manage a rocket fleet
-(register, browse, update, decommission) backed by a health-check archetype. A React
+(register, browse, update, decommission), schedule launches, and register passenger
+bookings against them, backed by a health-check archetype. A React
 single-page app talks over HTTP/JSON to a Spring Boot REST API, which persists data to a
 local SQLite database via JPA/Hibernate. A Playwright suite exercises the running stack
 end to end.
@@ -35,8 +36,8 @@ C4Container
 ### Containers table
 | Container | Technology | Responsibility |
 |-----------|------------|----------------|
-| [back](./back.arch.md) | Java 21, Spring Boot 3.5 (web, data-jpa) | REST API under `/api/*`; rockets, launches, and health domains; persistence |
-| [front](./front.arch.md) | React 19, TypeScript, Vite | Single-page UI; rocket catalog and health views; HTTP client to the API |
+| [back](./back.arch.md) | Java 21, Spring Boot 3.5 (web, data-jpa) | REST API under `/api/*`; rockets, launches, bookings, and health domains; persistence |
+| [front](./front.arch.md) | React 19, TypeScript, Vite | Single-page UI; rocket catalog, launches, bookings, and health views; HTTP client to the API |
 | [db](./db.arch.md) | SQLite (`back/data/app.db`) | Relational storage; schema auto-managed by Hibernate (`ddl-auto: update`) |
 | [e2e](./e2e.arch.md) | Playwright + TypeScript | End-to-end tests booting the real API + SPA |
 
@@ -55,9 +56,10 @@ C4Container
 ```mermaid
 erDiagram
     ROCKET ||--o{ LAUNCH : "assigned to"
+    LAUNCH ||--o{ BOOKING : "has"
     HEALTH_CHECK
 ```
 
 ---
 
-> last updated: 2026-06-10
+> last updated: 2026-06-12

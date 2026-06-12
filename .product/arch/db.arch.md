@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `db` container is a SQLite file at `back/data/app.db`. It has no migration scripts; Hibernate's `ddl-auto: update` evolves the schema automatically from JPA `@Entity` classes in `back`. It stores three independent domains: rockets, launches, and health checks.
+The `db` container is a SQLite file at `back/data/app.db`. It has no migration scripts; Hibernate's `ddl-auto: update` evolves the schema automatically from JPA `@Entity` classes in `back`. It stores the rocket/launch/booking domain plus independent health checks.
 
 - **Folder**: `back/data/`
 - **Archetype**: SQLite — Hibernate 6 (community dialect)
@@ -21,10 +21,12 @@ C4Component
   Container_Boundary(boundary, "db") {
     Component(rocket_tbl, "rocket", "Table", "Rocket fleet registry")
     Component(launch_tbl, "launch", "Table", "Scheduled launches with FK to rocket")
+    Component(booking_tbl, "booking", "Table", "Passenger bookings with FK to launch")
     Component(health_tbl, "health_check", "Table", "Point-in-time health snapshots")
   }
 
   Rel(launch_tbl, rocket_tbl, "rocket_id FK")
+  Rel(booking_tbl, launch_tbl, "launch_id FK")
 ```
 
 ### Code organization
@@ -70,6 +72,17 @@ back/data/
 | `minimum_occupancy` | INTEGER | NOT NULL |
 | `status` | TEXT (enum string) | NOT NULL; values: `CREATED`, `CONFIRMED`, `COMPLETED`, `CANCELLED` |
 
+### `booking`
+
+| Column | Type | Constraints |
+|--------|------|-------------|
+| `id` | TEXT (UUID) | PK, Hibernate-generated |
+| `launch_id` | TEXT | NOT NULL, FK → `launch.id` |
+| `passenger_name` | TEXT | NOT NULL |
+| `passenger_email` | TEXT | NOT NULL |
+| `passenger_phone` | TEXT | NOT NULL |
+| `status` | TEXT (enum string) | NOT NULL; values: `CREATED`, `CANCELLED` |
+
 ### `health_check`
 
 | Column | Type | Constraints |
@@ -80,4 +93,4 @@ back/data/
 | `uptime_seconds` | INTEGER | NOT NULL |
 | `checked_at` | TEXT | NOT NULL |
 
-> last updated: 2026-06-10
+> last updated: 2026-06-12

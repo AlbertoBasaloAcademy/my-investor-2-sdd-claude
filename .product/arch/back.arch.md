@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `back` container is a Java 21 + Spring Boot 3.5 REST API that implements three domains — **health**, **rockets**, and **launches** — exposed under `/api/*`. Business rules (validation, state machine, decommission guard) live entirely in services; controllers handle only HTTP mapping and exception routing. Data is persisted to a local SQLite file via JPA/Hibernate.
+The `back` container is a Java 21 + Spring Boot 3.5 REST API that implements four domains — **health**, **rockets**, **launches**, and **bookings** — exposed under `/api/*`. Business rules (validation, state machine, decommission guard) live entirely in services; controllers handle only HTTP mapping and exception routing. Data is persisted to a local SQLite file via JPA/Hibernate.
 
 - **Folder**: `back/`
 - **Archetype**: Java 21 — Spring Boot 3.5 (web, data-jpa)
@@ -31,7 +31,11 @@ C4Component
     Component(launch_svc,  "LaunchService",           "Service",         "Validates; enforces launch state machine")
     Component(launch_repo, "LaunchRepository",        "Repository",      "Queries launches by rocket/status/order")
 
-    Component(cors_cfg,    "CorsConfig",              "Configuration",   "Wires CORS for /api/** → SPA origin")
+    Component(booking_ctrl, "BookingController",      "REST Controller", "Create/list/cancel bookings per launch")
+    Component(booking_svc,  "BookingService",         "Service",         "Launch existence check; cancel-once rule")
+    Component(booking_repo, "BookingRepository",      "Repository",      "Finds bookings by launch")
+
+    Component(cors_cfg,    "CorsConfig",              "Configuration",   "Wires CORS for /api/** → SPA origin (GET POST PUT PATCH DELETE)")
   }
 
   Rel(health_ctrl, health_svc,  "delegates")
@@ -44,6 +48,10 @@ C4Component
   Rel(launch_ctrl, launch_svc,  "delegates")
   Rel(launch_svc,  launch_repo, "find / save / findAllByOrder")
   Rel(launch_svc,  rocket_repo, "findById (active-rocket check)")
+
+  Rel(booking_ctrl, booking_svc, "delegates")
+  Rel(booking_svc,  booking_repo, "find / save / findByLaunchId")
+  Rel(booking_svc,  launch_repo, "findById (launch-exists check)")
 ```
 
 ### Code organization
@@ -53,6 +61,15 @@ C4Component
 ```text
 back/src/main/java/dev/aiddbot/abjavareact/
 ├── AbJavaReactApplication.java         # entry point; ensures data/ directory exists
+├── bookings/
+│   ├── Booking.java                    # @Entity; cancel() domain method; @ManyToOne Launch
+│   ├── BookingController.java          # POST/GET /api/launches/{id}/bookings; GET /api/bookings/{id}; PATCH /api/bookings/{id}/cancel
+│   ├── BookingRepository.java          # findByLaunchId
+│   ├── BookingRequest.java             # record (passengerName, passengerEmail, passengerPhone) — @NotBlank
+│   ├── BookingResponse.java            # record (id, launchId, passenger fields, status lowercase)
+│   ├── BookingService.java             # launch-exists check; cancel-once rule
+│   ├── BookingStatus.java              # enum CREATED → CANCELLED
+│   └── ErrorResponse.java              # record (message) — error envelope
 ├── health/
 │   ├── HealthCheck.java                # @Entity; audit log record
 │   ├── HealthCheckRepository.java      # JpaRepository<HealthCheck, Long>
@@ -95,6 +112,10 @@ back/src/main/java/dev/aiddbot/abjavareact/
 | `GET /api/launches/{id}` | → `LaunchResponse` | exposes |
 | `PUT /api/launches/{id}` | `LaunchRequest` → `LaunchResponse` (CREATED status only) | exposes |
 | `PATCH /api/launches/{id}/status` | `LaunchStatusRequest` → `LaunchResponse` | exposes |
+| `POST /api/launches/{launchId}/bookings` | `BookingRequest` → `BookingResponse` (201) | exposes |
+| `GET /api/launches/{launchId}/bookings` | → `List<BookingResponse>` | exposes |
+| `GET /api/bookings/{id}` | → `BookingResponse` | exposes |
+| `PATCH /api/bookings/{id}/cancel` | → `BookingResponse` (409 if already cancelled) | exposes |
 | Error envelope | `ErrorResponse { message }` (400 / 404 / 409) | exposes |
 
 ---
@@ -134,6 +155,17 @@ back/src/main/java/dev/aiddbot/abjavareact/
 | minimum_occupancy | INT | NOT NULL (1 ≤ x ≤ rocket.capacity) |
 | status | TEXT | NOT NULL (CREATED \| CONFIRMED \| COMPLETED \| CANCELLED) |
 
+**booking**
+
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | TEXT | PK, UUID |
+| launch_id | TEXT | FK → launch.id, NOT NULL, EAGER |
+| passenger_name | TEXT | NOT NULL |
+| passenger_email | TEXT | NOT NULL |
+| passenger_phone | TEXT | NOT NULL |
+| status | TEXT | NOT NULL (CREATED \| CANCELLED) |
+
 ### Launch state machine
 
 ```
@@ -142,4 +174,10 @@ CREATED ──► CONFIRMED ──► COMPLETED
    └──────────────┴──────► CANCELLED
 ```
 
-> last updated: 2026-06-10
+### Booking state machine
+
+```
+CREATED ──► CANCELLED   (one-way; cancelled bookings cannot be reactivated, never deleted)
+```
+
+> last updated: 2026-06-12

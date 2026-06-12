@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `front` container is a React 19 + TypeScript SPA (Vite) that lets operators manage the rocket fleet and schedule launches via a single-page view. It calls the backend REST API over HTTP/JSON through a Vite dev-proxy (`/api` → `localhost:8080`) and a shared `httpClient` wrapper around the Fetch API. There is no client-side router; all three feature areas render together on one page.
+The `front` container is a React 19 + TypeScript SPA (Vite) that lets operators manage the rocket fleet, schedule launches, and handle passenger bookings via a single-page view. It calls the backend REST API over HTTP/JSON through a Vite dev-proxy (`/api` → `localhost:8080`) and a shared `httpClient` wrapper around the Fetch API. There is no client-side router; all four feature areas render together on one page.
 
 - **Folder**: `front/`
 - **Archetype**: TypeScript — React 19 + Vite
@@ -19,23 +19,27 @@ C4Component
   title Front Components
 
   Container_Boundary(boundary, "front") {
-    Component(app, "App", "Shell Component", "Composes the three feature components into one page")
+    Component(app, "App", "Shell Component", "Composes the four feature components into one page")
     Component(health, "HealthFeature", "Feature Module", "Displays system health status")
     Component(rockets, "RocketsFeature", "Feature Module", "Rocket catalog — list, create, edit, decommission")
     Component(launches, "LaunchesFeature", "Feature Module", "Launch scheduling — create, edit, confirm, complete, cancel")
+    Component(bookings, "BookingsFeature", "Feature Module", "Passenger bookings per launch — list, create, cancel")
     Component(httpClient, "httpClient", "HTTP Abstraction", "Typed Fetch wrapper; centralises auth headers and error parsing")
-    Component(types, "SharedTypes", "Type Definitions", "Domain interfaces: Rocket, Launch, HealthResponse")
+    Component(types, "SharedTypes", "Type Definitions", "Domain interfaces: Rocket, Launch, Booking, HealthResponse")
   }
 
   Rel(app, health, "renders")
   Rel(app, rockets, "renders")
   Rel(app, launches, "renders")
+  Rel(app, bookings, "renders (passes launches)")
   Rel(health, httpClient, "calls")
   Rel(rockets, httpClient, "calls")
   Rel(launches, httpClient, "calls")
+  Rel(bookings, httpClient, "calls")
   Rel(health, types, "imports")
   Rel(rockets, types, "imports")
   Rel(launches, types, "imports")
+  Rel(bookings, types, "imports")
 ```
 
 ### Code organization
@@ -58,18 +62,25 @@ front/src/
 │   │   ├── RocketCatalog.css
 │   │   ├── useRockets.ts       # Hook: rockets state + create/update/decommission
 │   │   └── rocketsApi.ts       # API: GET POST PUT DELETE /api/rockets
-│   └── launches/
-│       ├── LaunchCatalog.tsx   # List + LaunchForm + LaunchItem with status transitions
-│       ├── LaunchCatalog.css
-│       ├── useLaunches.ts      # Hook: launches state + create/update/transition
-│       └── launchesApi.ts      # API: GET POST PUT PATCH /api/launches
+│   ├── launches/
+│   │   ├── LaunchCatalog.tsx   # List + LaunchForm + LaunchItem with status transitions
+│   │   ├── LaunchCatalog.css
+│   │   ├── useLaunches.ts      # Hook: launches state + create/update/transition
+│   │   └── launchesApi.ts      # API: GET POST PUT PATCH /api/launches
+│   └── bookings/
+│       ├── BookingsFeature.tsx # Launch selector + BookingForm + BookingList
+│       ├── BookingForm.tsx     # Create form; blocks submit until all fields filled
+│       ├── BookingList.tsx     # Rows with cancel action; cancelled visually distinct
+│       ├── useBookings.ts      # Hook: bookings state per launch + create/cancel
+│       └── bookingsApi.ts      # API: GET POST /api/launches/{id}/bookings; PATCH cancel
 └── shared/
     ├── api/
     │   └── httpClient.ts       # Typed Fetch wrapper (get, post, put, patch, del)
     └── types/
         ├── health.ts           # HealthResponse, Status
         ├── rockets.ts          # Rocket, RocketRequest, RocketRange
-        └── launches.ts         # Launch, LaunchRequest, LaunchStatusRequest, LaunchStatus
+        ├── launches.ts         # Launch, LaunchRequest, LaunchStatusRequest, LaunchStatus
+        └── bookings.ts         # Booking, BookingRequest, BookingStatus
 ```
 
 ### Key contracts
@@ -85,6 +96,9 @@ front/src/
 | `POST /api/launches` | body: `LaunchRequest` → `Launch` | consumes |
 | `PUT /api/launches/{id}` | body: `LaunchRequest` → `Launch` | consumes |
 | `PATCH /api/launches/{id}/status` | body: `LaunchStatusRequest` → `Launch` | consumes |
+| `GET /api/launches/{launchId}/bookings` | `Booking[]` | consumes |
+| `POST /api/launches/{launchId}/bookings` | body: `BookingRequest` → `Booking` | consumes |
+| `PATCH /api/bookings/{id}/cancel` | `Booking` | consumes |
 
 ---
 
@@ -113,4 +127,11 @@ interface LaunchRequest  { rocketId: string; scheduledAt: string; pricePerTicket
 interface LaunchStatusRequest { status: LaunchStatus }
 ```
 
-> last updated: 2026-06-10
+**bookings.ts**
+```typescript
+type BookingStatus       = 'created' | 'cancelled'
+interface Booking        { id: string; launchId: string; passengerName: string; passengerEmail: string; passengerPhone: string; status: BookingStatus }
+interface BookingRequest { passengerName: string; passengerEmail: string; passengerPhone: string }
+```
+
+> last updated: 2026-06-12

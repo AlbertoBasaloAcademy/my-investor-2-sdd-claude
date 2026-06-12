@@ -4,7 +4,7 @@
 
 ## Overview
 
-The `e2e` container is a Playwright 1.52 + TypeScript test suite that boots the real Spring Boot API and Vite SPA before any test runs, then drives Chromium against the live stack to verify full-stack behaviour. It covers the health feature end-to-end (happy path, loading state, API error, network failure). Page Objects encapsulate locators; test files assert behaviour.
+The `e2e` container is a Playwright 1.52 + TypeScript test suite that boots the real Spring Boot API and Vite SPA before any test runs, then drives Chromium against the live stack to verify full-stack behaviour. It covers the health feature (happy path, loading state, API error, network failure) and the bookings feature (create, cancel, list, validation, not-found, re-cancel conflict, visual distinction). Page Objects encapsulate locators; test files assert behaviour.
 
 - **Folder**: `e2e/`
 - **Archetype**: TypeScript — Playwright
@@ -38,9 +38,11 @@ C4Component
 e2e/
 ├── playwright.config.ts     # Boots both servers, sets baseURL, browser, CI behaviour
 ├── tests/
-│   └── health.spec.ts       # Full-stack tests for the health feature (4 scenarios)
+│   ├── health.spec.ts       # Full-stack tests for the health feature (4 scenarios)
+│   └── bookings.spec.ts     # Full-stack tests for the bookings feature (8 scenarios)
 ├── pages/
-│   └── HealthPage.ts        # Locators and goto() for the health view
+│   ├── HealthPage.ts        # Locators and goto() for the health view
+│   └── BookingPage.ts       # Locators and goto() for the bookings section
 ├── tsconfig.json            # ES2022 strict; noEmit (type-check only)
 └── package.json             # Scripts: test, test:headed, report, lint
 ```
@@ -58,6 +60,8 @@ e2e/
 | `data-testid="health-timestamp"` | non-empty text | asserts |
 | `data-testid="health-loading"` | visible with "probing" text during delay | asserts |
 | `data-testid="health-error"` | visible and non-empty on failure | asserts |
+| Bookings API (real) | `POST/GET /api/launches/{id}/bookings`, `PATCH /api/bookings/{id}/cancel` → JSON + DOM | consumes (live API) |
+| `data-testid="booking-*"` selectors | launch select, form fields, rows, status, cancel button | asserts |
 
 ---
 
@@ -65,4 +69,4 @@ e2e/
 
 > `e2e` has no persistence layer. It consumes the live API contracts defined in [`back.arch.md`](./back.arch.md) and the `data-testid` selectors defined by the `front` container.
 
-> last updated: 2026-06-10
+> last updated: 2026-06-12
