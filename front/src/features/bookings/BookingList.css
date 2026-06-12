@@ -1,0 +1,62 @@
+.booking-rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.booking-item {
+  background: var(--item-bg, #181825);
+  border: 1px solid var(--border, #313244);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.booking--cancelled {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.booking-passenger {
+  font-weight: 600;
+}
+
+.booking-contact {
+  font-size: 0.875rem;
+  color: var(--muted, #9399b2);
+  flex: 1;
+}
+
+.booking-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+.booking-status--created {
+  color: var(--accent, #89b4fa);
+}
+
+.booking-status--cancelled {
+  color: var(--danger, #f38ba8);
+}
+
+.booking-cancel-btn {
+  background: transparent;
+  color: var(--danger, #f38ba8);
+  border-color: var(--danger, #f38ba8);
+}
+
+.booking-cancel-btn:hover {
+  background: var(--danger, #f38ba8);
+  color: #fff;
+}

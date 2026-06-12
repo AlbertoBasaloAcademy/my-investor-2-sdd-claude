@@ -1,0 +1,31 @@
+.bookings-feature {
+  background: var(--card-bg, #1e1e2e);
+  border: 1px solid var(--border, #313244);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 640px;
+  margin: 1rem auto;
+}
+
+.bookings-feature h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.bookings-launch-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.bookings-launch-row label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.bookings-error {
+  color: var(--danger, #f38ba8);
+  font-size: 0.875rem;
+}
