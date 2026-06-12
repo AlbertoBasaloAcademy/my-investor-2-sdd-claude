@@ -73,14 +73,14 @@ The database must persist booking records.
 
 ### Acceptance criteria
 
-- [ ] When a booking is submitted with valid passenger details for an existing launch, it is stored with status `created` and returned to the caller.
-- [ ] When a booking is cancelled, its status changes to `cancelled` and the change is persisted.
-- [ ] When bookings are listed for a launch, all bookings (both `created` and `cancelled`) are returned.
-- [ ] When a booking is requested for a launch that does not exist, the API returns a not-found error.
-- [ ] When a booking is submitted with any required field missing, the API returns a validation error.
+- [x] When a booking is submitted with valid passenger details for an existing launch, it is stored with status `created` and returned to the caller.
+- [x] When a booking is cancelled, its status changes to `cancelled` and the change is persisted.
+- [x] When bookings are listed for a launch, all bookings (both `created` and `cancelled`) are returned.
+- [x] When a booking is requested for a launch that does not exist, the API returns a not-found error.
+- [x] When a booking is submitted with any required field missing, the API returns a validation error.
 
 ### Additional criteria
 
-- [ ] A cancelled booking cannot be reactivated via the API.
-- [ ] The front-end booking form validates that name, email, and phone are filled before submitting.
-- [ ] Cancelled bookings are visually distinct in the bookings list.
+- [x] A cancelled booking cannot be reactivated via the API.
+- [x] The front-end booking form validates that name, email, and phone are filled before submitting.
+- [x] Cancelled bookings are visually distinct in the bookings list.
