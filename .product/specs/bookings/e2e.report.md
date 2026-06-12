@@ -6,6 +6,7 @@ slug: bookings
 
 > Suite: `e2e/tests/bookings.spec.ts` (8 scenarios) + `e2e/pages/BookingPage.ts`.
 > Run 1: 2026-06-12 — 7 passed / 1 failed (plus 4 pre-existing health tests, all green).
+> Run 3 (resume confirmation): 2026-06-12 — 12/12 passed (15.8s); no open defects.
 
 ## Defects
 
