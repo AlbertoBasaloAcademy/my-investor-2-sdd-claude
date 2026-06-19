@@ -2,7 +2,7 @@
 name: extract
 description: Document one container in depth — C4 L3 components + container code rules. Greenfield prescribes; brownfield extracts.
 user-invocable: true
-disable-model-invocation: true
+disable-model-invocation: false
 ---
 
 # Extract skill
@@ -10,10 +10,9 @@ disable-model-invocation: true
 For **one container at a time**, generate its component architecture and container code-rules documents, acting as a senior architect.
 
 ## Input
-- Root `CLAUDE.md` and `{Product_Folder}/arch/system.arch.md` (run `/explore` first if missing).
+- Root `AGENTS.md` and `{Product_Folder}/arch/system.arch.md` (run `/explore` first if missing).
 - The container to document (ask which one if not given).
 - Templates: [`container.arch.template.md`](./assets/container.arch.template.md), [`container.rules.template.md`](./assets/container.rules.template.md).
-- CAUTION: Read ONLY ONE (green or brown) 
 - Mode guide (read the one matching whether this container already has code):
   - [`mode.greenfield.md`](./references/mode.greenfield.md) — no code; prescribe the intended design.
   - [`mode.brownfield.md`](./references/mode.brownfield.md) — existing code; extract facts.
