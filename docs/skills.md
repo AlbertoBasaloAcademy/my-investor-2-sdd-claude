@@ -18,3 +18,6 @@
 - [write-a-skill.md](https://github.com/mattpocock/skills/blob/main/skills/productivity/write-a-skill/SKILL.md) to be copied to `/.agents/skills/write-a-skill/SKILL.md`.
 
 - [Skill Creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator) to be copied to `/.agents/skills/skill-creator/`.
+
+
+https://github.com/cursor/plugins
